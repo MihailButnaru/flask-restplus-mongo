@@ -5,7 +5,10 @@ User database models
 """
 import enum
 
-from sqlalchemy_utils import types as column_types, Timestamp
+from mongoengine import Document, EmailField, StringField, DateTimeField, IntField
+from datetime import datetime
+from app.extensions import Timestamp
+
 
 from app.extensions import db
 
@@ -38,25 +41,17 @@ def _get_is_static_role_property(role_name, static_role):
     return _is_static_role_property
 
 
-class User(db.Model, Timestamp):
-    """
-    User database model.
-    """
+class User(Document, Timestamp):
+    meta = {'allow_inheritance': True, 'abstract': False, 'collection': 'users'}
 
-    id = db.Column(db.Integer, primary_key=True) # pylint: disable=invalid-name
-    username = db.Column(db.String(length=80), unique=True, nullable=False)
-    password = db.Column(
-        column_types.PasswordType(
-            max_length=128,
-            schemes=('bcrypt', )
-        ),
-        nullable=False
-    )
-    email = db.Column(db.String(length=120), unique=True, nullable=False)
 
-    first_name = db.Column(db.String(length=30), default='', nullable=False)
-    middle_name = db.Column(db.String(length=30), default='', nullable=False)
-    last_name = db.Column(db.String(length=30), default='', nullable=False)
+    email = EmailField(unique=True)
+    password = StringField(max_length=128)
+
+
+    first_name = StringField(max_length=30)
+    middle_name = StringField(max_length=30)
+    last_name = StringField(max_length=30)
 
     class StaticRoles(enum.Enum):
         INTERNAL = (0x8000, "Internal")
@@ -72,7 +67,8 @@ class User(db.Model, Timestamp):
         def title(self):
             return self.value[1]
 
-    static_roles = db.Column(db.Integer, default=0, nullable=False)
+
+    static_roles = IntField(default=0)
 
     is_internal = _get_is_static_role_property('is_internal', StaticRoles.INTERNAL)
     is_admin = _get_is_static_role_property('is_admin', StaticRoles.ADMIN)
@@ -83,7 +79,6 @@ class User(db.Model, Timestamp):
         return (
             "<{class_name}("
             "id={self.id}, "
-            "username=\"{self.username}\", "
             "email=\"{self.email}\", "
             "is_internal={self.is_internal}, "
             "is_admin={self.is_admin}, "
@@ -120,19 +115,22 @@ class User(db.Model, Timestamp):
         return False
 
     @classmethod
-    def find_with_password(cls, username, password):
+    def find_with_password(cls, email, password):
         """
         Args:
-            username (str)
+            email (str)
             password (str) - plain-text password
 
         Returns:
-            user (User) - if there is a user with a specified username and
+            user (User) - if there is a user with a specified email and
             password, None otherwise.
         """
-        user = cls.query.filter_by(username=username).first()
+        user = cls.objects(email=email).first()
+
         if not user:
             return None
         if user.password == password:
             return user
         return None
+
+
