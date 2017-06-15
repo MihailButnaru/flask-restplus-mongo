@@ -3,11 +3,11 @@ import datetime
 from flask_mongoengine import Document
 from mongoengine.fields import IntField, StringField, DateTimeField
 
-class Timestamp(Document):
+class Timestamp(object):
     """
     Timestamp replacement for MongoDB
     """
-    updated = DateTimeField(default=datetime.utcnow())
+    updated = DateTimeField(default=datetime.datetime.utcnow())
 
     @property
     def created(self):

@@ -20,15 +20,26 @@ class BaseUserSchema(ModelSchema):
         # pylint: disable=missing-docstring
         model = User
         fields = (
-            User.id.key,
-            User.username.key,
-            User.first_name.key,
-            User.middle_name.key,
-            User.last_name.key,
+            'id',
+            'username',
+            'first_name',
+            'middle_name',
+            'last_name',
         )
         dump_only = (
-            User.id.key,
+            'id',
         )
+        #fields = (
+        #    User.id.key,
+        #    User.username.key,
+        #    User.first_name.key,
+        #    User.middle_name.key,
+        #    User.last_name.key,
+        #)
+        #dump_only = (
+        #    User.id.key,
+        #)
+
 
 
 class DetailedUserSchema(BaseUserSchema):
@@ -38,13 +49,21 @@ class DetailedUserSchema(BaseUserSchema):
 
     class Meta(BaseUserSchema.Meta):
         fields = BaseUserSchema.Meta.fields + (
-            User.email.key,
-            User.created.key,
-            User.updated.key,
+            'email',
+            'created',
+            'updated',
             User.is_active.fget.__name__,
             User.is_regular_user.fget.__name__,
             User.is_admin.fget.__name__,
         )
+        #fields = BaseUserSchema.Meta.fields + (
+        #    User.email.key,
+        #    User.created.key,
+        #    User.updated.key,
+        #    User.is_active.fget.__name__,
+        #    User.is_regular_user.fget.__name__,
+        #    User.is_admin.fget.__name__,
+        #)
 
 
 class UserSignupFormSchema(Schema):

@@ -21,12 +21,19 @@ class BaseTeamSchema(ModelSchema):
         # pylint: disable=missing-docstring
         model = Team
         fields = (
-            Team.id.key,
-            Team.title.key,
+            'id',
+            'title',
         )
         dump_only = (
-            Team.id.key,
+            'id',
         )
+        #fields = (
+        #    Team.id.key,
+        #    Team.title.key,
+        #)
+        #dump_only = (
+        #    Team.id.key,
+        #)
 
 
 class DetailedTeamSchema(BaseTeamSchema):
@@ -36,16 +43,26 @@ class DetailedTeamSchema(BaseTeamSchema):
 
     members = base_fields.Nested(
         'BaseTeamMemberSchema',
-        exclude=(TeamMember.team.key, ),
+        exclude=(TeamMember.team, ),
         many=True
     )
+    #members = base_fields.Nested(
+    #    'BaseTeamMemberSchema',
+    #    exclude=(TeamMember.team.key, ),
+    #    many=True
+    #)
 
     class Meta(BaseTeamSchema.Meta):
         fields = BaseTeamSchema.Meta.fields + (
-            Team.members.key,
-            Team.created.key,
-            Team.updated.key,
+            'members',
+            'created',
+            'updated',
         )
+        #fields = BaseTeamSchema.Meta.fields + (
+        #    Team.members.key,
+        #    Team.created.key,
+        #    Team.updated.key,
+        #)
 
 
 class BaseTeamMemberSchema(ModelSchema):
@@ -56,7 +73,12 @@ class BaseTeamMemberSchema(ModelSchema):
     class Meta:
         model = TeamMember
         fields = (
-            TeamMember.team.key,
-            TeamMember.user.key,
-            TeamMember.is_leader.key,
+            'team',
+            'user',
+            'is_leader',
         )
+        #fields = (
+        #    TeamMember.team.key,
+        #    TeamMember.user.key,
+        #    TeamMember.is_leader.key,
+        #)

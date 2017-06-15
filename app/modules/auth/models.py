@@ -131,7 +131,8 @@ class OAuth2Grant(Document):
         #return cls.query.filter_by(client_id=client_id, code=code).first()
 
 
-class OAuth2Token(db.Model):
+#class OAuth2Token(db.Model):
+class OAuth2Token(Document):
     """
     OAuth2 Access Tokens storage model.
     """

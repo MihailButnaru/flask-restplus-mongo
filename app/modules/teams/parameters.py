@@ -16,8 +16,11 @@ class CreateTeamParameters(PostFormParameters, schemas.BaseTeamSchema):
     class Meta(schemas.BaseTeamSchema.Meta):
         # This is not supported yet: https://github.com/marshmallow-code/marshmallow/issues/344
         required = (
-            Team.title.key,
+            'title',
         )
+        #required = (
+        #    Team.title.key,
+        #)
 
 
 class PatchTeamDetailsParameters(PatchJSONParameters):

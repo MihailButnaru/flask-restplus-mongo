@@ -18,20 +18,33 @@ class BaseOAuth2ClientSchema(ModelSchema):
     default_scopes = base_fields.List(base_fields.String, required=True)
     redirect_uris = base_fields.List(base_fields.String, required=True)
 
+    #fields = ('full_name', 'date_created')
+
     class Meta:
         # pylint: disable=missing-docstring
         model = OAuth2Client
         fields = (
-            OAuth2Client.user_id.key,
-            OAuth2Client.client_id.key,
-            OAuth2Client.client_type.key,
-            OAuth2Client.default_scopes.key,
-            OAuth2Client.redirect_uris.key,
+            'user_id',
+            'client_id',
+            'client_type',
+            'default_scopes',
+            'redirect_uris'
         )
         dump_only = (
-            OAuth2Client.user_id.key,
-            OAuth2Client.client_id.key,
+            'user_id',
+            'client_id',
         )
+        #fields = (
+        #    OAuth2Client.user_id.key,
+        #    OAuth2Client.client_id.key,
+        #    OAuth2Client.client_type.key,
+        #    OAuth2Client.default_scopes.key,
+        #    OAuth2Client.redirect_uris.key,
+        #)
+        #dump_only = (
+        #    OAuth2Client.user_id.key,
+        #    OAuth2Client.client_id.key,
+        #)
 
 
 class DetailedOAuth2ClientSchema(BaseOAuth2ClientSchema):
@@ -41,5 +54,8 @@ class DetailedOAuth2ClientSchema(BaseOAuth2ClientSchema):
 
     class Meta(BaseOAuth2ClientSchema.Meta):
         fields = BaseOAuth2ClientSchema.Meta.fields + (
-            OAuth2Client.client_secret.key,
+            'client_secret',
         )
+        #fields = BaseOAuth2ClientSchema.Meta.fields + (
+        #    OAuth2Client.client_secret.key,
+        #)

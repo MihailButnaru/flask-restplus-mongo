@@ -70,16 +70,29 @@ class PatchUserDetailsParameters(PatchJSONParameters):
     PATH_CHOICES = tuple(
         '/%s' % field for field in (
             'current_password',
-            User.first_name.key,
-            User.middle_name.key,
-            User.last_name.key,
-            User.password.key,
-            User.email.key,
+            User.first_name.db_field,
+            User.middle_name.db_field,
+            User.last_name.db_field,
+            User.password.db_field,
+            User.email.db_field,
             User.is_active.fget.__name__,
             User.is_regular_user.fget.__name__,
             User.is_admin.fget.__name__,
         )
     )
+    #PATH_CHOICES = tuple(
+    #    '/%s' % field for field in (
+    #        'current_password',
+    #        User.first_name.key,
+    #        User.middle_name.key,
+    #        User.last_name.key,
+    #        User.password.key,
+    #        User.email.key,
+    #        User.is_active.fget.__name__,
+    #        User.is_regular_user.fget.__name__,
+    #        User.is_admin.fget.__name__,
+    #    )
+    #)
 
     @classmethod
     def test(cls, obj, field, value, state):

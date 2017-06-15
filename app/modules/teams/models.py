@@ -94,7 +94,8 @@ class Team(Document, Timestamp):
             )
         )
 
-    @db.validates('title')
+    #FIXME: find mongoengine equivalent
+    #@db.validates('title')
     def validate_title(self, key, title): # pylint: disable=unused-argument,no-self-use
         if len(title) < 3:
             raise ValueError("Title has to be at least 3 characters long.")
