@@ -62,7 +62,7 @@ def authorize(*args, **kwargs):
 
     if request.method == 'GET':
         client_id = kwargs.get('client_id')
-        oauth2_client = OAuth2Client.query.get_or_404(client_id=client_id)
+        oauth2_client = OAuth2Client.objects.get_or_404(client_id=client_id)
         kwargs['client'] = oauth2_client
         kwargs['user'] = current_user
         # TODO: improve template design

@@ -39,7 +39,8 @@ class Users(Resource):
         Returns a list of users starting from ``offset`` limited by ``limit``
         parameter.
         """
-        return User.query.offset(args['offset']).limit(args['limit'])
+        #return User.query.offset(args['offset']).limit(args['limit'])
+        return User.objects[args['offset']:args['offset']+args['limit']]
 
     @api.parameters(parameters.AddUserParameters())
     @api.response(schemas.DetailedUserSchema())
@@ -51,11 +52,11 @@ class Users(Resource):
         Create a new user.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to create a new user."
             ):
             new_user = User(**args)
-            db.session.add(new_user)
+            new_user.save()
+            #db.session.add(new_user)
         return new_user
 
 
@@ -111,11 +112,11 @@ class UserByID(Resource):
         Patch user details by ID.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to update user details."
             ):
             parameters.PatchUserDetailsParameters.perform_patch(args, user)
-            db.session.merge(user)
+            #db.session.merge(user)
+            user.save()
         return user
 
 
@@ -131,4 +132,5 @@ class UserMe(Resource):
         """
         Get current user details.
         """
-        return User.query.get_or_404(current_user.id)
+        #return User.query.get_or_404(current_user.id)
+        return User.objects.get_or_404(id=current_user.id)

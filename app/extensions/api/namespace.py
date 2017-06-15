@@ -7,8 +7,9 @@ from contextlib import contextmanager
 from functools import wraps
 
 import flask_marshmallow
-import sqlalchemy
-from werkzeug.exceptions import HTTPException
+#import sqlalchemy
+#import mongoengine
+#from werkzeug.exceptions import HTTPException
 
 from flask_restplus_patched import Namespace as BaseNamespace
 from flask_restplus_patched._http import HTTPStatus
@@ -260,7 +261,7 @@ class Namespace(BaseNamespace):
         func._access_restriction_decorators.append(decorator_to_register)  # pylint: disable=protected-access
 
     @contextmanager
-    def commit_or_abort(self, session, default_error_message="The operation failed to complete"):
+    def commit_or_abort(self, default_error_message="The operation failed to complete"):
         """
         Context manager to simplify a workflow in resources
 
@@ -274,13 +275,31 @@ class Namespace(BaseNamespace):
         ...     db.session.add(team)
         ...     return team
         """
+        #try:
+        #    with session.begin():
+        #        yield
+        #except ValueError as exception:
+        #    http_exceptions.abort(code=HTTPStatus.CONFLICT, message=str(exception))
+        #except sqlalchemy.exc.IntegrityError:
+        #    http_exceptions.abort(
+        #        code=HTTPStatus.CONFLICT,
+        #        message=default_error_message
+        #    )
+
+
         try:
-            with session.begin():
-                yield
+            yield
         except ValueError as exception:
             http_exceptions.abort(code=HTTPStatus.CONFLICT, message=str(exception))
-        except sqlalchemy.exc.IntegrityError:
+
+        except Exception as exception:
             http_exceptions.abort(
                 code=HTTPStatus.CONFLICT,
                 message=default_error_message
             )
+
+        #except sqlalchemy.exc.IntegrityError:
+        #    http_exceptions.abort(
+        #        code=HTTPStatus.CONFLICT,
+        #        message=default_error_message
+        #    )

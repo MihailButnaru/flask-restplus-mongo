@@ -105,7 +105,7 @@ class Team(Document, Timestamp):
         This is a helper method for OwnerRolePermission integration.
         """
 
-        if self.objects.find(team=self, is_leader=True, user=user).first():
+        if self.objects(team=self, is_leader=True, user=user).first():
             return True
         return False
 

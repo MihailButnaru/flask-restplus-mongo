@@ -42,7 +42,8 @@ class Teams(Resource):
         Returns a list of teams starting from ``offset`` limited by ``limit``
         parameter.
         """
-        return Team.query.offset(args['offset']).limit(args['limit'])
+        #return Team.query.offset(args['offset']).limit(args['limit'])
+        return Team.objects[args['offset']:args['offset']+args['limit']]
 
     @api.login_required(oauth_scopes=['teams:write'])
     @api.parameters(parameters.CreateTeamParameters())
@@ -53,13 +54,14 @@ class Teams(Resource):
         Create a new team.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to create a new team"
             ):
             team = Team(**args)
-            db.session.add(team)
+            team.save()
+            #db.session.add(team)
             team_member = TeamMember(team=team, user=current_user, is_leader=True)
-            db.session.add(team_member)
+            team_member.save()
+            #db.session.add(team_member)
         return team
 
 
@@ -100,11 +102,11 @@ class TeamByID(Resource):
         Patch team details by ID.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to update team details."
             ):
             parameters.PatchTeamDetailsParameters.perform_patch(args, obj=team)
-            db.session.merge(team)
+            team.save()
+            #db.session.merge(team)
         return team
 
     @api.login_required(oauth_scopes=['teams:write'])
@@ -120,10 +122,10 @@ class TeamByID(Resource):
         Delete a team by ID.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to delete the team."
             ):
-            db.session.delete(team)
+            team.delete()
+            #db.session.delete(team)
         return None
 
 
@@ -166,11 +168,11 @@ class TeamMembers(Resource):
         Add a new member to a team.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to update team details."
             ):
             user_id = args.pop('user_id')
-            user = User.query.get(user_id)
+            #user = User.query.get(user_id)
+            user = User.objects(user_id=user_id).first()
             if user is None:
                 abort(
                     code=HTTPStatus.NOT_FOUND,
@@ -178,7 +180,8 @@ class TeamMembers(Resource):
                 )
 
             team_member = TeamMember(team=team, user=user, **args)
-            db.session.add(team_member)
+            team_member.save()
+            #db.session.add(team_member)
 
         return team_member
 
@@ -207,10 +210,11 @@ class TeamMemberByID(Resource):
         Remove a member from a team.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to update team details."
             ):
-            team_member = TeamMember.query.filter_by(team=team, user_id=user_id).first_or_404()
-            db.session.delete(team_member)
+            team_member = TeamMember.objects(team=team, user_id=user_id).first_or_404()
+            #team_member = TeamMember.query.filter_by(team=team, user_id=user_id).first_or_404()
+            team_member.save()
+            #db.session.delete(team_member)
 
         return None

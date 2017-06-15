@@ -5,7 +5,8 @@ RESTful API permissions
 -----------------------
 """
 import logging
-from flask_sqlalchemy import BaseQuery
+#from flask_sqlalchemy import BaseQuery
+from flask_mongoengine import BaseQuerySet
 from permission import Permission as BasePermission
 
 from . import rules
@@ -13,7 +14,7 @@ from . import rules
 log = logging.getLogger(__name__)
 
 
-class PermissionExtendedQuery(BaseQuery):
+class PermissionExtendedQuery(BaseQuerySet):
     """
     Extends BaseQuery class from flask_sqlalchemy to add get_or_403 method
 

@@ -38,12 +38,18 @@ class OAuth2Clients(Resource):
         Returns a list of OAuth2 Clients starting from ``offset`` limited by
         ``limit`` parameter.
         """
-        oauth2_clients = OAuth2Client.query
+        #oauth2_clients = OAuth2Client.query
+        oauth2_clients = OAuth2Client.objects
         if 'user_id' in args:
-            oauth2_clients = oauth2_clients.filter(
-                OAuth2Client.user_id == args['user_id']
+            oauth2_clients = oauth2_clients(
+                user_id = args['user_id']
             )
-        return oauth2_clients.offset(args['offset']).limit(args['limit'])
+            #oauth2_clients = oauth2_clients.filter(
+            #    OAuth2Client.user_id == args['user_id']
+            #)
+
+        return oauth2_clients[args['offset']:args['offset'] + args['limit']]
+        #return oauth2_clients.offset(args['offset']).limit(args['limit'])
 
     @api.login_required(oauth_scopes=['auth:write'])
     @api.parameters(parameters.CreateOAuth2ClientParameters())
@@ -59,7 +65,6 @@ class OAuth2Clients(Resource):
         pair associated with a user.
         """
         with api.commit_or_abort(
-                db.session,
                 default_error_message="Failed to create a new OAuth2 client."
             ):
             # TODO: reconsider using gen_salt
@@ -69,5 +74,6 @@ class OAuth2Clients(Resource):
                 client_secret=security.gen_salt(50),
                 **args
             )
-            db.session.add(new_oauth2_client)
+            new_oauth2_client.save()
+            #db.session.add(new_oauth2_client)
         return new_oauth2_client
