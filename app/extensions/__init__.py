@@ -13,12 +13,10 @@ Please, put new extension instantiations and initializations here.
 from flask_cors import CORS
 cross_origin_resource_sharing = CORS()
 
-from sqlalchemy_utils import force_auto_coercion, force_instant_defaults
-force_auto_coercion()
-force_instant_defaults()
+#from sqlalchemy_utils import force_auto_coercion, force_instant_defaults
+#force_auto_coercion()
+#force_instant_defaults()
 
-import datetime
-from mongoengine import Document, DateTimeField
 from flask_mongoengine import MongoEngine
 db = MongoEngine()  # connect MongoEngine with Flask App
 
@@ -66,12 +64,3 @@ def init_app(app):
     app.extensions['migrate'] = AlembicDatabaseMigrationConfig(db, compare_type=True)
 
 
-class Timestamp(Document):
-    """
-    Timestamp replacement for MongoDB
-    """
-    updated = DateTimeField(default=datetime.utcnow())
-
-    @property
-    def created(self):
-        return self._created

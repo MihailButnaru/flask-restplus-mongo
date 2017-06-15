@@ -5,9 +5,10 @@ User database models
 """
 import enum
 
-from mongoengine import Document, EmailField, StringField, DateTimeField, IntField
+from flask_mongoengine import Document
+from mongoengine import  EmailField, StringField, DateTimeField, IntField
 from datetime import datetime
-from app.extensions import Timestamp
+from app.modules.api.mongo_helpers import Timestamp
 
 
 from app.extensions import db
@@ -91,7 +92,7 @@ class User(Document, Timestamp):
         )
 
     def has_static_role(self, role):
-        return (self.static_roles & role.mask) != 0
+        return (self['static_roles'] & role.mask) != 0
 
     def set_static_role(self, role):
         if self.has_static_role(role):

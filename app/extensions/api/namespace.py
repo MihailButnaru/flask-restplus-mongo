@@ -47,7 +47,8 @@ class Namespace(BaseNamespace):
             identity_arg_name = '%s_id' % object_arg_name
         return self.resolve_object(
             object_arg_name,
-            resolver=lambda kwargs: model.query.get_or_404(kwargs.pop(identity_arg_name))
+            #resolver=lambda kwargs: model.query.get_or_404(kwargs.pop(identity_arg_name))
+            resolver = lambda kwargs: model.objects.get_or_404(kwargs.pop(identity_arg_name))
         )
 
     def model(self, name=None, model=None, **kwargs):
