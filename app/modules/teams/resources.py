@@ -43,7 +43,7 @@ class Teams(Resource):
         parameter.
         """
         #return Team.query.offset(args['offset']).limit(args['limit'])
-        return Team.objects[args['offset']:args['offset']+args['limit']]
+        return Team.objects.skip(args['offset']).limit(args['limit'])
 
     @api.login_required(oauth_scopes=['teams:write'])
     @api.parameters(parameters.CreateTeamParameters())
@@ -152,7 +152,7 @@ class TeamMembers(Resource):
         """
         Get team members by team ID.
         """
-        return team.members[args['offset']: args['offset'] + args['limit']]
+        return team.members.skip(args['offset']).limit(args['limit'])
 
     @api.login_required(oauth_scopes=['teams:write'])
     @api.permission_required(

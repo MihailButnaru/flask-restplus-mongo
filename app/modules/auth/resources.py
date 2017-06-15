@@ -48,8 +48,9 @@ class OAuth2Clients(Resource):
             #    OAuth2Client.user_id == args['user_id']
             #)
 
-        return oauth2_clients[args['offset']:args['offset'] + args['limit']]
+        return oauth2_clients.skip(args['offset']).limit(args['limit'])
         #return oauth2_clients.offset(args['offset']).limit(args['limit'])
+
 
     @api.login_required(oauth_scopes=['auth:write'])
     @api.parameters(parameters.CreateOAuth2ClientParameters())

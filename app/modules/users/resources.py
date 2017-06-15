@@ -40,7 +40,7 @@ class Users(Resource):
         parameter.
         """
         #return User.query.offset(args['offset']).limit(args['limit'])
-        return User.objects[args['offset']:args['offset']+args['limit']]
+        return User.objects.skip(args['offset']).limit(args['limit'])
 
     @api.parameters(parameters.AddUserParameters())
     @api.response(schemas.DetailedUserSchema())
